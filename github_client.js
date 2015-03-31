@@ -1,10 +1,11 @@
 (function () {
-	Meteor.loginWithGithub = function (callback) {
-		var config = Meteor.accounts.configuration.findOne({service: 'github'});
+  var login = function(configKey, callback) {
+		var config = Meteor.accounts.configuration.findOne({service: configKey});
 		if (!config) {
 			callback && callback(new Meteor.accounts.ConfigError("Service not configured"));
 			return;
 		}
+
 		var state = Meteor.uuid();
 		
 		var required_scope = ['user'];
@@ -22,5 +23,13 @@
 		      '&state=' + state;
 		
 		Meteor.accounts.oauth.initiateLogin(state, loginUrl, callback);
+  };
+
+	Meteor.loginWithGithub = function (callback) {
+    return login('github', callback);
+	};
+
+	Meteor.loginWithGithubMobile = function (callback) {
+    return login('github-mobile', callback);
 	};
 }) ();
